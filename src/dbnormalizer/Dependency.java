@@ -25,6 +25,11 @@ public class Dependency implements Comparable<Dependency>
 
     boolean multiValued;
 
+    public Schema getSchema()
+    {
+        return schema;
+    }
+    
     public SortedSet<String> getFrom()
     {
         return from;
@@ -48,6 +53,19 @@ public class Dependency implements Comparable<Dependency>
     public boolean isMultiValued()
     {
         return multiValued;
+    }
+    
+    public Set<Relation> candidateKeyFor()
+    {
+        Set<Relation> keyRelation = new HashSet<>();
+        for (Relation r : this.schema.getRelations())
+        {
+            if (this.to.containsAll(r.getAttributes()))
+            {
+                keyRelation.add(r);
+            }
+        }
+        return keyRelation;
     }
 
     public void setMultiValued(boolean multiValued)
@@ -93,13 +111,17 @@ public class Dependency implements Comparable<Dependency>
     }
     
     public Dependency removeExtraneousLH(Collection<Dependency> depedencies) {
+        if (this.from.size() <= 1)
+        {
+            return this;
+        }
         SortedSet<String> newFrom = new TreeSet<>();
         for (String s : this.from)
         {
             SortedSet<String> fromWithoutS = new TreeSet<>(this.from);
             fromWithoutS.remove(s);
             
-            Dependency withoutS = new Dependency(this.schema, fromWithoutS, this.to, false);
+            Dependency withoutS = new Dependency(this.schema, fromWithoutS, fromWithoutS, false);
             Dependency closure = withoutS.getClosure(depedencies);
             if (!closure.to.containsAll(this.to))
             {
@@ -112,6 +134,10 @@ public class Dependency implements Comparable<Dependency>
     
     public Dependency removeExtraneousRH(Collection<Dependency> dependencies)
     {
+        if (this.to.size() <= 1)
+        {
+            return this;
+        }
         SortedSet<String> newTo = new TreeSet<>();
         for (String s : this.to)
         {

@@ -65,6 +65,21 @@ public class Closure
         for (Dependency d : this.closures)
         {
             sb.append(d.toString());
+            Set<Relation> keyRelations = d.candidateKeyFor();
+            boolean writeKey = true;
+            for (Relation r : keyRelations)
+            {
+                if (writeKey)
+                {
+                    sb.append(", candidate key for ");
+                    writeKey = false;
+                }
+                else
+                {
+                    sb.append(", ");
+                }
+                sb.append(r.getName());
+            }
             sb.append("\n");
         }
         return sb.toString();

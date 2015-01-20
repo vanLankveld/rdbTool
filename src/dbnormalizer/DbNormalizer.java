@@ -6,6 +6,7 @@
 package dbnormalizer;
 
 import java.util.Scanner;
+import java.util.TreeSet;
 
 /**
  *
@@ -92,6 +93,10 @@ public class DbNormalizer
         String closureString = schema.computeClosure();
         System.out.println("Closure of the current schema: ");
         System.out.println(closureString);
+        System.out.println();
+        System.out.println("Canonical cover of the current schema: ");
+        CanonicalCover cover = new CanonicalCover(new TreeSet<>(schema.getDependencies()));
+        System.out.println(cover.toString());
     }
 
 }
