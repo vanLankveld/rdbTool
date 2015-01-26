@@ -146,7 +146,8 @@ public class Dependency implements Comparable<Dependency>
             SortedSet<String> testTo = new TreeSet<>(this.to);
             testTo.remove(s);
             limitedFds.add(new Dependency(this.schema, this.from, testTo, false));
-            Dependency closure = this.getClosure(limitedFds);
+            Dependency withoutS = new Dependency(schema, this.from, testTo, false);
+            Dependency closure = withoutS.getClosure(limitedFds);
             if (!closure.to.contains(s))
             {
                 //s is not extraneous

@@ -16,39 +16,41 @@ import java.util.TreeSet;
  */
 public class CanonicalCover
 {
+
     private SortedSet<Dependency> dependencyFds;
 
     public CanonicalCover(SortedSet<Dependency> initialFds)
     {
         this.dependencyFds = computeCover(initialFds);
     }
-    
-    private SortedSet<Dependency> computeCover(SortedSet<Dependency> initialFds) {
+
+    private SortedSet<Dependency> computeCover(SortedSet<Dependency> initialFds)
+    {
         SortedSet<Dependency> oldFds = new TreeSet<>(initialFds);
         SortedSet<Dependency> newFds = new TreeSet<>();
-        
+
         boolean completed = false;
-        
+
         while (!completed)
         {
             SortedSet<Dependency> currentSet = new TreeSet<>(oldFds);
-            
+
             for (Dependency d : currentSet)
             {
                 newFds.add(d.removeExtraneousLH(initialFds));
             }
-            
+
             currentSet = new TreeSet<>(newFds);
             newFds.clear();
-            
+
             for (Dependency d : currentSet)
             {
                 newFds.add(d.removeExtraneousRH(initialFds));
             }
-            
+
             currentSet = new TreeSet<>(newFds);
             newFds.clear();
-            
+
             Set<Dependency> removed = new HashSet<>();
             for (Dependency d1 : currentSet)
             {
@@ -65,17 +67,16 @@ public class CanonicalCover
                     }
                 }
             }
-            
+
             Set<Dependency> notRemoved = new TreeSet<>(currentSet);
             notRemoved.removeAll(removed);
-            
+
             newFds.addAll(notRemoved);
-            
+
             if (oldFds.equals(newFds))
             {
                 completed = true;
-            }
-            else
+            } else
             {
                 oldFds = new TreeSet<>(newFds);
                 newFds.clear();
@@ -83,7 +84,7 @@ public class CanonicalCover
         }
         return newFds;
     }
-    
+
     @Override
     public String toString()
     {
@@ -95,5 +96,5 @@ public class CanonicalCover
         }
         return sb.toString().trim();
     }
-           
+
 }
