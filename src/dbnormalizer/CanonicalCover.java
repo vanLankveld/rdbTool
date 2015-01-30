@@ -37,7 +37,7 @@ public class CanonicalCover
 
             for (Dependency d : currentSet)
             {
-                newFds.add(d.removeExtraneousLH(initialFds));
+                newFds.add(d.removeExtraneousLH(currentSet));
             }
 
             currentSet = new TreeSet<>(newFds);
@@ -45,7 +45,7 @@ public class CanonicalCover
 
             for (Dependency d : currentSet)
             {
-                newFds.add(d.removeExtraneousRH(initialFds));
+                newFds.add(d.removeExtraneousRH(currentSet));
             }
 
             currentSet = new TreeSet<>(newFds);

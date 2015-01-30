@@ -115,7 +115,7 @@ public class Dependency implements Comparable<Dependency>
         {
             return this;
         }
-        SortedSet<String> newFrom = new TreeSet<>();
+        SortedSet<String> newFrom = new TreeSet<>(this.from);
         for (String s : this.from)
         {
             SortedSet<String> fromWithoutS = new TreeSet<>(this.from);
@@ -123,10 +123,10 @@ public class Dependency implements Comparable<Dependency>
             
             Dependency withoutS = new Dependency(this.schema, fromWithoutS, fromWithoutS, false);
             Dependency closure = withoutS.getClosure(depedencies);
-            if (!closure.to.containsAll(this.to))
+            if (closure.to.containsAll(this.to) && newFrom.size() > 1)
             {
-                //s is not extraneous
-                newFrom.add(s);
+                //s is extraneous
+                newFrom.remove(s);
             }
         }
         return new Dependency(this.schema, newFrom, this.to, false);
@@ -138,7 +138,7 @@ public class Dependency implements Comparable<Dependency>
         {
             return this;
         }
-        SortedSet<String> newTo = new TreeSet<>();
+        SortedSet<String> newTo = new TreeSet<>(this.to);
         for (String s : this.to)
         {
             Set<Dependency> limitedFds = new HashSet<>(dependencies);
@@ -148,10 +148,10 @@ public class Dependency implements Comparable<Dependency>
             limitedFds.add(new Dependency(this.schema, this.from, testTo, false));
             Dependency withoutS = new Dependency(schema, this.from, testTo, false);
             Dependency closure = withoutS.getClosure(limitedFds);
-            if (!closure.to.contains(s))
+            if (closure.to.contains(s) && newTo.size() > 1)
             {
-                //s is not extraneous
-                newTo.add(s);
+                //s is extraneous
+                newTo.remove(s);
             }
         }
         return new Dependency(this.schema, this.from, newTo, false);
