@@ -3,8 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dbnormalizer;
+package relationalDb;
 
+import relationalDb.domain.Relation;
+import relationalDb.domain.Dependency;
+import relationalDb.domain.Schema;
+import relationalDb.domain.CanonicalCover;
+import relationalDb.domain.InvalidAttributeStringException;
 import java.util.Scanner;
 import java.util.TreeSet;
 
@@ -41,7 +46,7 @@ public class DbNormalizer
 
             try
             {
-                Relation relation = new Relation(name, input);
+                Relation relation = new Relation(schema, name, input);
                 schema.getRelations().add(relation);
                 System.out.printf("Relation created: %s", relation.toString());
                 System.out.println();

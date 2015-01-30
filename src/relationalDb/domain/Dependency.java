@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dbnormalizer;
+package relationalDb.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -53,6 +53,10 @@ public class Dependency implements Comparable<Dependency>
     public boolean isMultiValued()
     {
         return multiValued;
+    }
+    
+    public boolean isTrivial() {
+        return this.from.containsAll(this.to);
     }
     
     public Set<Relation> candidateKeyFor()

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package dbnormalizer;
+package relationalDb.domain;
 
 import java.util.Arrays;
 import java.util.SortedSet;
