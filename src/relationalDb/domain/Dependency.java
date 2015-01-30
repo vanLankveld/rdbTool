@@ -64,7 +64,9 @@ public class Dependency implements Comparable<Dependency>
         Set<Relation> keyRelation = new HashSet<>();
         for (Relation r : this.schema.getRelations())
         {
-            if (this.to.containsAll(r.getAttributes()))
+            Set<String> toAndFrom = new HashSet<>(this.to);
+            toAndFrom.addAll(this.from);
+            if (toAndFrom.containsAll(r.getAttributes()))
             {
                 keyRelation.add(r);
             }

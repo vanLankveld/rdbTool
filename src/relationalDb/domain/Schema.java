@@ -26,6 +26,19 @@ public class Schema
     {
         return relations;
     }
+    
+    public Set<Relation> getNotInBcnf()
+    {
+        Set<Relation> notInBcnf = new HashSet<>();
+        for (Relation r : this.getRelations())
+        {
+            if (!r.violatesBcnf().isEmpty() && r.getAttributes().size() > 2)
+            {
+                notInBcnf.add(r);
+            }
+        }
+        return notInBcnf;
+    }
 
     public Set<Dependency> getDependencies()
     {

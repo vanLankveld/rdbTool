@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 
-package relationalDb.domain;
+package relationalDb.domain.normalization;
 
-import java.util.Set;
+import relationalDb.domain.Schema;
 
 /**
  *
@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public abstract class Normalizer
 {
-    private Schema schema;
+    protected Schema schema;
 
     public Schema getSchema()
     {
@@ -31,5 +31,5 @@ public abstract class Normalizer
         this.schema = schema;
     }
     
-    public abstract Set<Relation> decompose();
+    public abstract Schema normalize();
 }

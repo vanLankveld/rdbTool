@@ -12,6 +12,8 @@ import relationalDb.domain.CanonicalCover;
 import relationalDb.domain.InvalidAttributeStringException;
 import java.util.Scanner;
 import java.util.TreeSet;
+import relationalDb.domain.normalization.BcnfNormalizer;
+import relationalDb.domain.normalization.Normalizer;
 
 /**
  *
@@ -102,6 +104,15 @@ public class DbNormalizer
         System.out.println("Canonical cover of the current schema: ");
         CanonicalCover cover = new CanonicalCover(new TreeSet<>(schema.getDependencies()));
         System.out.println(cover.toString());
+        
+        Normalizer bcnf = new BcnfNormalizer(schema);
+        schema = bcnf.normalize();
+        System.out.println();
+        System.out.println("BCNF decomposition: ");
+        for (Relation r : schema.getRelations())
+        {
+            System.out.println(r.toString());
+        }
     }
 
 }

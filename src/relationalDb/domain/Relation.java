@@ -5,10 +5,12 @@
  */
 package relationalDb.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  *
@@ -44,9 +46,9 @@ public class Relation
         Set<Dependency> dependencies = new HashSet<>();
         for (Dependency d : this.schema.getDependencies())
         {
-            Set<String> toAndFrom = d.getFrom();
+            Set<String> toAndFrom = new TreeSet<>(d.getFrom());
             toAndFrom.addAll(d.getTo());
-            if (this.attributes.containsAll(toAndFrom))
+            if (this.attributes.containsAll(d.getTo()))
             {
                 dependencies.add(d);
             }
@@ -76,7 +78,14 @@ public class Relation
     {
         this.schema = schema;
         this.name = name;
-        attributes = Util.stringToSortedSet(attributeString);
+        this.attributes = Util.stringToSortedSet(attributeString);
+    }
+    
+    public Relation(Schema schema, String name, Collection<String> attributes)
+    {
+        this.schema = schema;
+        this.name = name;
+        this.attributes = new TreeSet<>(attributes);
     }
 
     public void addAttribute(String attr)
