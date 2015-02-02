@@ -37,12 +37,14 @@ public class Relation
     {
         return attributes;
     }
-    
+
     /**
      * Gets all dependencies that hold in this relation
-     * @return 
+     *
+     * @return
      */
-    public Set<Dependency> getDependencies() {
+    public Set<Dependency> getDependencies()
+    {
         Set<Dependency> dependencies = new HashSet<>();
         for (Dependency d : this.schema.getDependencies())
         {
@@ -74,13 +76,56 @@ public class Relation
         return violations;
     }
 
+    public Set<Dependency> violates3nf()
+    {
+        Set<Dependency> violations = new HashSet<>();
+        for (Dependency d : this.getDependencies())
+        {
+            if (d.isTrivial())
+            {
+                continue;
+            }
+            Set<String> toMinusFrom = new HashSet<>(d.getTo());
+            toMinusFrom.removeAll(d.getFrom());
+            boolean isContainedInKey = false;
+            for (Dependency k : this.getCandidateKeys())
+            {
+                if (k.getFrom().containsAll(toMinusFrom))
+                {
+                    isContainedInKey = true;
+                    break;
+                }
+            }
+            Set<Relation> superkeyRelations = d.candidateKeyFor();
+            if (!isContainedInKey && !superkeyRelations.contains(this))
+            {
+                violations.add(d);
+            }
+        }
+        return violations;
+    }
+
+    public Set<Dependency> getCandidateKeys()
+    {
+        Set<Dependency> candidateKeys = new HashSet<>();
+        Closure closure = this.schema.getClosure();
+        for (Dependency d : closure.getClosures())
+        {
+            if (d.getTo().equals(this.attributes))
+            {
+                candidateKeys.add(d);
+            }
+        }
+        return candidateKeys;
+    }
+
     public Relation(Schema schema, String name, String attributeString) throws InvalidAttributeStringException
     {
         this.schema = schema;
         this.name = name;
         this.attributes = Util.stringToSortedSet(attributeString);
     }
-    
+
     public Relation(Schema schema, String name, Collection<String> attributes)
     {
         this.schema = schema;

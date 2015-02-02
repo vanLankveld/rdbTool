@@ -16,7 +16,7 @@ import java.util.TreeSet;
  */
 public class Util
 {
-    public static final String attrStringRegex = "([a-zA-Z0-9]([,\\s;][a-zA-Z0-9])*)*";
+    public static final String attrStringRegex = "([a-zA-Z0-9]([,\\s;]+[a-zA-Z0-9])*)*";
     
     public static SortedSet<String> stringToSortedSet(String input) throws InvalidAttributeStringException
     {
@@ -24,7 +24,7 @@ public class Util
         {
             throw new InvalidAttributeStringException(input);
         }
-        String[] attributesSplit = input.split("[,\\s;]");
+        String[] attributesSplit = input.split("[,\\s;]+");
         TreeSet<String> set = new TreeSet<>();
         set.addAll(Arrays.asList(attributesSplit));
         return set;

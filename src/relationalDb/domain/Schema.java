@@ -39,6 +39,19 @@ public class Schema
         }
         return notInBcnf;
     }
+    
+    public Set<Relation> getNotInThirdNF()
+    {
+        Set<Relation> notIn3nf = new HashSet<>();
+        for (Relation r : this.getRelations())
+        {
+            if (!r.violates3nf().isEmpty() && r.getAttributes().size() > 2)
+            {
+                notIn3nf.add(r);
+            }
+        }
+        return notIn3nf;
+    }
 
     public Set<Dependency> getDependencies()
     {

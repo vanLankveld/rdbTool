@@ -23,6 +23,11 @@ public class Closure
     private Schema schema;
     private Set<Dependency> closures;
 
+    public Set<Dependency> getClosures()
+    {
+        return closures;
+    }
+
     public Closure(Schema schema)
     {
         this.schema = schema;
