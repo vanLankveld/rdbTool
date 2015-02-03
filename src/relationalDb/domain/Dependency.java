@@ -87,10 +87,10 @@ public class Dependency implements Comparable<Dependency>
         this.schema = schema;
     }
 
-    public Dependency(Schema schema, SortedSet<String> from, SortedSet<String> to, boolean multiValued)
+    public Dependency(Schema schema, Collection<String> from, Collection<String> to, boolean multiValued)
     {
-        this.from = from;
-        this.to = to;
+        this.from = new TreeSet<>(from);
+        this.to = new TreeSet<>(to);
         this.multiValued = multiValued;
         this.schema = schema;
     }

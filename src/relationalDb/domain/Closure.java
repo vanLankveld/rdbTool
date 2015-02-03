@@ -5,8 +5,10 @@
  */
 package relationalDb.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -34,32 +36,34 @@ public class Closure
         this.closures = new TreeSet<>();
 
         //Get all atributes
-        SortedSet<String> attributes = new TreeSet<>();
+        List<String> attributes = new ArrayList<>();
         for (Relation r : this.schema.getRelations())
         {
             attributes.addAll(r.getAttributes());
         }
 
-        //Get the closure for all single attributes
-        for (String a : attributes)
+        //Get all possible combinations of attributes
+        Set<Set<String>> attributeCombis = new HashSet<>();
+        for (int i = 0; i < Math.pow(2, attributes.size() - 1); i++)
         {
-            try
+            Set<String> attr = new HashSet<>();
+            String binary = Integer.toBinaryString(i);
+            Integer[] indices = Util.getOneIndices(binary);
+            for (Integer j : indices)
             {
-                Dependency closureDependency = new Dependency(schema, a, a, false);
-                closures.add(closureDependency.getClosure(this.schema.getDependencies()));
-            } catch (InvalidAttributeStringException ex)
-            {
-                Logger.getLogger(Closure.class.getName()).log(Level.SEVERE, null, ex);
+                attr.add(attributes.get(j));
             }
+            attributeCombis.add(attr);
         }
 
-        for (Dependency d : this.schema.getDependencies())
+        //Get the closure for all single attributes
+        for (Set<String> attr : attributeCombis)
         {
-            if (d.getFrom().size() == 1)
+            Dependency closureDependency = new Dependency(schema, attr, attr, false).getClosure(this.schema.getDependencies());
+            if (!closureDependency.isTrivial())
             {
-                continue;
+                closures.add(closureDependency);
             }
-            closures.add(d.getClosure(this.schema.getDependencies()));
         }
     }
 
@@ -78,8 +82,7 @@ public class Closure
                 {
                     sb.append(", candidate key for ");
                     writeKey = false;
-                }
-                else
+                } else
                 {
                     sb.append(", ");
                 }
