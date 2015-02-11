@@ -59,7 +59,7 @@ public class Dependency implements Comparable<Dependency>
         return this.from.containsAll(this.to);
     }
     
-    public Set<Relation> candidateKeyFor()
+    public Set<Relation> superKeyFor()
     {
         Set<Relation> keyRelation = new HashSet<>();
         for (Relation r : this.schema.getRelations())

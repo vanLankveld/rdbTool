@@ -17,7 +17,11 @@ import java.util.TreeSet;
 public class CanonicalCover
 {
 
-    private SortedSet<Dependency> dependencyFds;
+    private final SortedSet<Dependency> dependencyFds;
+
+    public SortedSet<Dependency> getDependencyFds() {
+        return dependencyFds;
+    }
 
     public CanonicalCover(SortedSet<Dependency> initialFds)
     {

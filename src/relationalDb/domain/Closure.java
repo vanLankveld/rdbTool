@@ -6,14 +6,12 @@
 package relationalDb.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -22,8 +20,13 @@ import java.util.logging.Logger;
 public class Closure
 {
 
-    private Schema schema;
-    private Set<Dependency> closures;
+    private final Schema schema;
+    private final Set<Dependency> closures;
+    
+    public Set<Dependency> getOriginalFDs()
+    {
+        return this.schema.getDependencies();
+    }
 
     public Set<Dependency> getClosures()
     {
@@ -65,24 +68,38 @@ public class Closure
                 closures.add(closureDependency);
             }
         }
+        
+        
     }
 
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        Map<Relation, Integer> smallestKeySizes = new HashMap<>();
         for (Dependency d : this.closures)
         {
             sb.append(d.toString());
-            Set<Relation> keyRelations = d.candidateKeyFor();
+            Set<Relation> keyRelations = d.superKeyFor();
             boolean writeKey = true;
             for (Relation r : keyRelations)
             {
+                smallestKeySizes.putIfAbsent(r, 0);
+                
                 if (writeKey)
                 {
-                    sb.append(", candidate key for ");
+                    if (d.getFrom().size() <= smallestKeySizes.get(r) || smallestKeySizes.get(r)  == 0)
+                    {
+                        smallestKeySizes.put(r, d.getFrom().size());
+                        sb.append(", candidate key for ");
+                    }
+                    else
+                    {
+                        sb.append(", superkey for ");
+                    }
                     writeKey = false;
-                } else
+                }
+                else
                 {
                     sb.append(", ");
                 }

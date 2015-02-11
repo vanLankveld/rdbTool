@@ -20,8 +20,8 @@ public class Relation
 {
 
     private String name;
-    private SortedSet<String> attributes;
-    private Schema schema;
+    private final SortedSet<String> attributes;
+    private final Schema schema;
 
     public String getName()
     {
@@ -67,7 +67,7 @@ public class Relation
             {
                 continue;
             }
-            Set<Relation> superkeyRelations = d.candidateKeyFor();
+            Set<Relation> superkeyRelations = d.superKeyFor();
             if (!superkeyRelations.contains(this))
             {
                 violations.add(d);
@@ -88,7 +88,7 @@ public class Relation
             Set<String> toMinusFrom = new HashSet<>(d.getTo());
             toMinusFrom.removeAll(d.getFrom());
             boolean isContainedInKey = false;
-            for (Dependency k : this.getCandidateKeys())
+            for (Dependency k : this.getSuperKeys())
             {
                 if (k.getFrom().containsAll(toMinusFrom))
                 {
@@ -96,7 +96,7 @@ public class Relation
                     break;
                 }
             }
-            Set<Relation> superkeyRelations = d.candidateKeyFor();
+            Set<Relation> superkeyRelations = d.superKeyFor();
             if (!isContainedInKey && !superkeyRelations.contains(this))
             {
                 violations.add(d);
@@ -105,14 +105,30 @@ public class Relation
         return violations;
     }
 
-    public Set<Dependency> getCandidateKeys()
+    public Set<Dependency> getSuperKeys()
     {
-        Set<Dependency> candidateKeys = new HashSet<>();
+        Set<Dependency> keys = new HashSet<>();
         Closure closure = this.schema.getClosure();
         for (Dependency d : closure.getClosures())
         {
             if (d.getTo().equals(this.attributes))
             {
+                keys.add(d);
+            }
+        }
+        return keys;
+    }
+    
+    public Set<Dependency> getCandidateKeys()
+    {
+        Set<Dependency> keys = getSuperKeys();
+        Set<Dependency> candidateKeys = new TreeSet<>();
+        int smallest = 0;
+        for (Dependency d : keys)
+        {
+            if (smallest == 0 || d.getFrom().size() <= smallest)
+            {
+                smallest = d.getFrom().size();
                 candidateKeys.add(d);
             }
         }
