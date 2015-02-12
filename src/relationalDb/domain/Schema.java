@@ -60,6 +60,10 @@ public class Schema
 
     public Closure getClosure()
     {
+        if (this.closure == null)
+        {
+            this.closure = new Closure(this);
+        }
         return closure;
     }
 
@@ -67,6 +71,12 @@ public class Schema
     {
         this.relations = new HashSet<>();
         this.dependencies = new HashSet<>();
+    }
+    
+    public Schema(Schema copyOf)
+    {
+        this.relations = copyOf.relations;
+        this.dependencies = copyOf.dependencies;
     }
     
     public String computeClosure()

@@ -39,9 +39,7 @@ public class ThirdNFNormalizer extends Normalizer
     public Schema normalize()
     {
         Schema thirdNfSchema = new Schema();
-        schema.getDependencies().addAll(this.schema.getDependencies());
-        
-        
+        schema.getDependencies().addAll(this.schema.getDependencies()); 
         
         CanonicalCover cover = new CanonicalCover(new TreeSet<>(this.schema.getDependencies()));
 

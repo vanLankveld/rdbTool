@@ -33,7 +33,7 @@ public class BcnfNormalizer extends Normalizer
         Schema bcnfSchema = this.schema;
         while (!bcnfSchema.getNotInBcnf().isEmpty())
         {
-            List<Relation> allNotInBcnf = new ArrayList<>(this.schema.getNotInBcnf());
+            List<Relation> allNotInBcnf = new ArrayList<>(bcnfSchema.getNotInBcnf());
             Relation notInBcnf = allNotInBcnf.get(0);
             List<Dependency> allViolations = new ArrayList<>(notInBcnf.violatesBcnf());
             Dependency violation = allViolations.get(0);
